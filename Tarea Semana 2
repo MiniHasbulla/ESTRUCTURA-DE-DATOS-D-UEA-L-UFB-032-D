@@ -1,0 +1,120 @@
+
+
+//Clase principal para probar las figuras
+public class Main {
+    public static void main(String[] args) {
+        // Ejemplo de uso de las clases
+        Estrella estrella = new Estrella(5, 10, 7);
+        System.out.println("Área de la estrella: " + estrella.calcularArea());
+        System.out.println("Perímetro de la estrella: " + estrella.calcularPerimetro());
+        
+        Rombo rombo = new Rombo(8, 6, 5);
+        System.out.println("\nÁrea del rombo: " + rombo.calcularArea());
+        System.out.println("Perímetro del rombo: " + rombo.calcularPerimetro());
+    }
+}
+
+//Clase para la figura Estrella
+class Estrella {
+    // Atributos encapsulados
+    private int puntas;
+    private double longitudLado;
+    private double apotema;
+    
+    // Constructor
+    public Estrella(int puntas, double longitudLado, double apotema) {
+        this.puntas = puntas;
+        this.longitudLado = longitudLado;
+        this.apotema = apotema;
+    }
+    
+    // Métodos get y set
+    public int getPuntas() {
+        return puntas;
+    }
+    
+    public void setPuntas(int puntas) {
+        this.puntas = puntas;
+    }
+    
+    public double getLongitudLado() {
+        return longitudLado;
+    }
+    
+    public void setLongitudLado(double longitudLado) {
+        this.longitudLado = longitudLado;
+    }
+    
+    public double getApotema() {
+        return apotema;
+    }
+    
+    public void setApotema(double apotema) {
+        this.apotema = apotema;
+    }
+    
+    // Método para calcular el área
+    public double calcularArea() {
+        // Área de un polígono regular: (perímetro * apotema) / 2
+        return (this.calcularPerimetro() * apotema) / 2;
+    }
+    
+    // Método para calcular el perímetro
+    public double calcularPerimetro() {
+        // Perímetro: número de puntas * longitud del lado * 2
+        // (cada punta tiene dos lados)
+        return puntas * longitudLado * 2;
+    }
+}
+
+//Clase para la figura Rombo
+class Rombo {
+    // Atributos encapsulados
+    private double diagonalMayor;
+    private double diagonalMenor;
+    private double lado;
+    
+    // Constructor
+    public Rombo(double diagonalMayor, double diagonalMenor, double lado) {
+        this.diagonalMayor = diagonalMayor;
+        this.diagonalMenor = diagonalMenor;
+        this.lado = lado;
+    }
+    
+    // Métodos get y set
+    public double getDiagonalMayor() {
+        return diagonalMayor;
+    }
+    
+    public void setDiagonalMayor(double diagonalMayor) {
+        this.diagonalMayor = diagonalMayor;
+    }
+    
+    public double getDiagonalMenor() {
+        return diagonalMenor;
+    }
+    
+    public void setDiagonalMenor(double diagonalMenor) {
+        this.diagonalMenor = diagonalMenor;
+    }
+    
+    public double getLado() {
+        return lado;
+    }
+    
+    public void setLado(double lado) {
+        this.lado = lado;
+    }
+    
+    // Método para calcular el área
+    public double calcularArea() {
+        // Área del rombo: (diagonal mayor * diagonal menor) / 2
+        return (diagonalMayor * diagonalMenor) / 2;
+    }
+    
+    // Método para calcular el perímetro
+    public double calcularPerimetro() {
+        // Perímetro del rombo: 4 * lado
+        return 4 * lado;
+    }
+}
