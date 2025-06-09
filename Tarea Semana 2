@@ -56,15 +56,15 @@ class Estrella {
         this.apotema = apotema;
     }
     
-    // Método para calcular el área
+    // Metodo para calcular el area
     public double calcularArea() {
-        // Área de un polígono regular: (perímetro * apotema) / 2
+        // Area de un polígono regular: (perímetro * apotema) / 2
         return (this.calcularPerimetro() * apotema) / 2;
     }
     
-    //calcular el perímetro
+    //calcular el perimetro
     public double calcularPerimetro() {
-        // Perímetro: número de puntas * longitud del lado * 2
+        // Perimetro: número de puntas * longitud del lado * 2
         // (cada punta tiene dos lados)
         return puntas * longitudLado * 2;
     }
@@ -109,15 +109,15 @@ class Rombo {
         this.lado = lado;
     }
     
-    //calcular el área
+    //calcular el area
     public double calcularArea() {
-        // Área del rombo: (diagonal mayor * diagonal menor) / 2
+        // Area del rombo: (diagonal mayor * diagonal menor) / 2
         return (diagonalMayor * diagonalMenor) / 2;
     }
     
-    //calcular el perímetro
+    //calcular el perimetro
     public double calcularPerimetro() {
-        // Perímetro del rombo: 4 * lado
+        // Perimetro del rombo: 4 * lado
         return 4 * lado;
     }
 }
