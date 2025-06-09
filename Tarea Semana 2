@@ -1,14 +1,17 @@
-
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha: 08/06/2025
 
 //Clase principal para probar las figuras
 public class Main {
     public static void main(String[] args) {
         // Ejemplo de uso de las clases
-        Estrella estrella = new Estrella(5, 10, 7);
+        Estrella estrella = new Estrella(12, 67, 9);
         System.out.println("Área de la estrella: " + estrella.calcularArea());
         System.out.println("Perímetro de la estrella: " + estrella.calcularPerimetro());
         
-        Rombo rombo = new Rombo(8, 6, 5);
+        Rombo rombo = new Rombo(23, 11, 75);
         System.out.println("\nÁrea del rombo: " + rombo.calcularArea());
         System.out.println("Perímetro del rombo: " + rombo.calcularPerimetro());
     }
@@ -21,14 +24,14 @@ class Estrella {
     private double longitudLado;
     private double apotema;
     
-    // Constructor
+    //Constructor
     public Estrella(int puntas, double longitudLado, double apotema) {
         this.puntas = puntas;
         this.longitudLado = longitudLado;
         this.apotema = apotema;
     }
     
-    // Métodos get y set
+    //get y set
     public int getPuntas() {
         return puntas;
     }
@@ -59,7 +62,7 @@ class Estrella {
         return (this.calcularPerimetro() * apotema) / 2;
     }
     
-    // Método para calcular el perímetro
+    //calcular el perímetro
     public double calcularPerimetro() {
         // Perímetro: número de puntas * longitud del lado * 2
         // (cada punta tiene dos lados)
@@ -74,14 +77,14 @@ class Rombo {
     private double diagonalMenor;
     private double lado;
     
-    // Constructor
+    //Constructor
     public Rombo(double diagonalMayor, double diagonalMenor, double lado) {
         this.diagonalMayor = diagonalMayor;
         this.diagonalMenor = diagonalMenor;
         this.lado = lado;
     }
     
-    // Métodos get y set
+    //get y set
     public double getDiagonalMayor() {
         return diagonalMayor;
     }
@@ -106,13 +109,13 @@ class Rombo {
         this.lado = lado;
     }
     
-    // Método para calcular el área
+    //calcular el área
     public double calcularArea() {
         // Área del rombo: (diagonal mayor * diagonal menor) / 2
         return (diagonalMayor * diagonalMenor) / 2;
     }
     
-    // Método para calcular el perímetro
+    //calcular el perímetro
     public double calcularPerimetro() {
         // Perímetro del rombo: 4 * lado
         return 4 * lado;
