@@ -1,0 +1,181 @@
+
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class SistemaAportesCompleto {
+    
+    public static void main(String[] args) {
+        SistemaAportes sistema = new SistemaAportes();
+        Scanner scanner = new Scanner(System.in);
+        
+        int opcion;
+        do {
+            System.out.println("\n--- El Super Registro de Aportes 999 ---");
+            System.out.println("1. Registrar un nuevo miembro");
+            System.out.println("2. Registrar el aporte mensual");
+            System.out.println("3. Consultar los aportes de un integrante");
+            System.out.println("4. Generar reporte de todos los miembros");
+            System.out.println("5. Salir");
+            System.out.print("Por favor escoge una opcion para continuar: ");
+            
+            opcion = scanner.nextInt();
+            scanner.nextLine(); //esto para limpiar buffer
+            
+            switch(opcion) {
+                case 1:
+                    System.out.print("Escribe el  ID del integrante: ");
+                    String id = scanner.nextLine();
+                    System.out.print("Digita el nombre del miembro: ");
+                    String nombre = scanner.nextLine();
+                    System.out.print("Redacta el apellido del miembro: ");
+                    String apellido = scanner.nextLine();
+                    sistema.registrarMiembro(id, nombre, apellido);
+                    break;
+                case 2:
+                    System.out.print("Ingresa ID del miembro: ");
+                    id = scanner.nextLine();
+                    System.out.print("Digita el numero del mes (1-12): ");
+                    int mes = scanner.nextInt();
+                    System.out.print("Escribe el monto del aporte: ");
+                    double monto = scanner.nextDouble();
+                    sistema.registrarAporte(id, mes, monto);
+                    break;
+                case 3:
+                    System.out.print("Redacta el ID del miembro: ");
+                    id = scanner.nextLine();
+                    sistema.consultarAportesMiembro(id);
+                    break;
+                case 4:
+                    sistema.generarReporte();
+                    break;
+                case 5:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+                default:
+                    System.out.println("Esta opción no es válida, porfa selecciona otra");
+            }
+        } while(opcion != 5);
+        
+        scanner.close();
+    }
+}
+
+class Miembro {
+    private String id;
+    private String nombre;
+    private String apellido;
+    private HashMap<Integer, Double> aportesMensuales; //el mes luego el monto
+    
+    public Miembro(String id, String nombre, String apellido) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.aportesMensuales = new HashMap<>();
+    }
+    
+    public void registrarAporte(int mes, double monto) {
+        aportesMensuales.put(mes, monto);
+    }
+    
+    public double getAporteMes(int mes) {
+        return aportesMensuales.getOrDefault(mes, 0.0);
+    }
+    
+    public HashMap<Integer, Double> getAportes() {
+        return new HashMap<>(aportesMensuales);
+    }
+    
+    public String getId() {
+        return id;
+    }
+    
+    public String getNombre() {
+        return nombre;
+    }
+    
+    public String getApellido() {
+        return apellido;
+    }
+    
+    public double getTotalAportado() {
+        return aportesMensuales.values().stream().mapToDouble(Double::doubleValue).sum();
+    }
+}
+
+class SistemaAportes {
+    private ArrayList<Miembro> miembros;
+    
+    public SistemaAportes() {
+        this.miembros = new ArrayList<>();
+    }
+    
+    public void registrarMiembro(String id, String nombre, String apellido) {
+        if (buscarMiembro(id) == null) {
+            miembros.add(new Miembro(id, nombre, apellido));
+            System.out.println("Miembro registrado con éxito :D");
+        } else {
+            System.out.println("Error, ya existe un miembro con ese ID");
+        }
+    }
+    
+    public void registrarAporte(String id, int mes, double monto) {
+        Miembro miembro = buscarMiembro(id);
+        if (miembro != null) {
+            if (mes >= 1 && mes <= 12) {
+                miembro.registrarAporte(mes, monto);
+                System.out.println("Aporte registrado con super éxito");
+            } else {
+                System.out.println("El mes que digitaste no es válido, debe estar entre 1 y 12");
+            }
+        } else {
+            System.out.println("No se encontro un miembro con ese ID :c");
+        }
+    }
+    
+    public void consultarAportesMiembro(String id) {
+        Miembro miembro = buscarMiembro(id);
+        if (miembro != null) {
+            System.out.println("\nAportes de " + miembro.getNombre() + " " + miembro.getApellido() + ":");
+            HashMap<Integer, Double> aportes = miembro.getAportes();
+            
+            if (aportes.isEmpty()) {
+                System.out.println("No hay aportes registrados :c");
+            } else {
+                for (int mes = 1; mes <= 12; mes++) {
+                    double monto = miembro.getAporteMes(mes);
+                    if (monto > 0) {
+                        System.out.println("Mes " + mes + ": $" + monto);
+                    }
+                }
+                System.out.println("El total aportado es: $" + miembro.getTotalAportado());
+            }
+        } else {
+            System.out.println("Error, no se encontró un miembro con ese ID");
+        }
+    }
+    
+    public void generarReporte() {
+        System.out.println("\n--- MegaReporte de todos los miembros 999 ---");
+        if (miembros.isEmpty()) {
+            System.out.println("No hay miembros registrados :c");
+        } else {
+            for (Miembro miembro : miembros) {
+                System.out.println("\nID: " + miembro.getId());
+                System.out.println("Nombre: " + miembro.getNombre() + " " + miembro.getApellido());
+                System.out.println("Total aportado: $" + miembro.getTotalAportado());
+            }
+        }
+    }
+    
+    private Miembro buscarMiembro(String id) {
+        for (Miembro miembro : miembros) {
+            if (miembro.getId().equals(id)) {
+                return miembro;
+            }
+        }
+        return null;
+    }
+}
