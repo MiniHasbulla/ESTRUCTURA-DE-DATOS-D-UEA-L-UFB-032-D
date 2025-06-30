@@ -4,3 +4,29 @@
 //Fecha de entrega: 29/06/2025
 //Tema: Lista de Ejercicios /Ejercicio 7
 //Lenguaje: Java
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class FiltradoAbecedario {
+    public static void main(String[] args) {
+        //lista abecedario
+        List<Character> abecedario = new ArrayList<>();
+        for (char letra = 'a'; letra <= 'z'; letra++) {
+            abecedario.add(letra);
+        }
+        
+        System.out.println("Abecedario completo: " + abecedario);
+        
+        //eliminacion Squid game Jugador abc elimnado, jugador def pasa
+        //ondice base 1
+        for (int i = abecedario.size(); i >= 1; i--) {
+            if (i % 3 == 0) {
+                //base 0
+                abecedario.remove(i - 1);
+            }
+        }
+        
+        System.out.println("Abecedario filtrado: " + abecedario);
+    }
+}
