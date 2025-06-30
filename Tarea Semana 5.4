@@ -1,1 +1,38 @@
-sss
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 29/06/2025
+//Tema: Lista de Ejercicios /Ejercicio 9
+//Lenguaje: Java
+
+import java.util.Scanner;
+
+public class ContadorVocalesSimple {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Hola amigo, porfa digita una palabra: ");
+        String palabra = scanner.nextLine().toLowerCase();
+        
+        int a = 0, e = 0, i = 0, o = 0, u = 0;
+        
+        for (int j = 0; j < palabra.length(); j++) {
+            char c = palabra.charAt(j);
+            switch (c) {
+                case 'a': a++; break;
+                case 'e': e++; break;
+                case 'i': i++; break;
+                case 'o': o++; break;
+                case 'u': u++; break;
+            }
+        }
+        
+        System.out.println("\nEl conteo de vocales es el siguiente:");
+        System.out.println("a: " + a);
+        System.out.println("e: " + e);
+        System.out.println("i: " + i);
+        System.out.println("o: " + o);
+        System.out.println("u: " + u);
+        
+        scanner.close();
+    }
+}
