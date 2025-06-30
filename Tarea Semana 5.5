@@ -1,0 +1,21 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 29/06/2025
+//Tema: Lista de Ejercicios /Ejercicio 10
+//Lenguaje: Java
+
+//hago uso de collections para condensar el codigo
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class PreciosMinMaxColecciones {
+    public static void main(String[] args) {
+        List<Integer> precios = Arrays.asList(50, 75, 46, 22, 80, 65, 8);
+        //lista de precios y uso de collections
+        System.out.println("Lista de precios: " + precios);
+        System.out.println("El precio más bajo es: " + Collections.min(precios));
+        System.out.println("El precio más alto es: " + Collections.max(precios));
+    }
+}
