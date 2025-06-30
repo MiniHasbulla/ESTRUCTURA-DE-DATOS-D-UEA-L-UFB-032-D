@@ -4,4 +4,46 @@
 //Fecha de entrega: 29/06/2025
 //Tema: Lista de Ejercicios /Ejercicio 6
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
+public class GestionAsignaturas {
+    public static void main(String[] args) {
+        //lista de las materias
+        List<String> asignaturas = new ArrayList<>();
+        asignaturas.add("Programacion 1");
+        asignaturas.add("Redes e Infraestructura");
+        asignaturas.add("Sistemas Operativos");
+        
+        //lista para repetir
+        List<String> asignaturasRepetir = new ArrayList<>();
+        
+        //revisar al usuario
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Ingrese las notas obtenidas en cada asignatura:");
+        
+        //evitar problemas al eliminar
+        for (String asignatura : new ArrayList<>(asignaturas)) {
+            System.out.print("Nota en " + asignatura + ": ");
+            double nota = scanner.nextDouble();
+            
+            if (nota < 5.0) { // Suponiendo que 5 es el mínimo para aprobar
+                asignaturasRepetir.add(asignatura);
+            }
+        }
+        
+        //finalmente indicar resultados
+        if (asignaturasRepetir.isEmpty()) {
+            System.out.println("Felicidades pasaste en todas las asignaturas.");
+        } else {
+            System.out.println("\nAsignaturas que debes repetir:");
+            for (String asignatura : asignaturasRepetir) {
+                System.out.println("- " + asignatura);
+            }
+        }
+        
+        scanner.close();
+    }
+}
