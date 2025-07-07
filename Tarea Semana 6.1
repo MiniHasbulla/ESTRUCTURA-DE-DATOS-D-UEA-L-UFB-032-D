@@ -1,0 +1,171 @@
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
+public class EstacionamientoSistemas {
+
+    static class Vehiculo {
+        private String placa;
+        private String rca;
+        private String marca;
+        private String modelo;
+        private int anio;
+        private double precio;
+
+        public Vehiculo(String placa, String rca, String marca, String modelo, int anio, double precio) {
+            this.placa = placa;
+            this.rca = rca;
+            this.marca = marca;
+            this.modelo = modelo;
+            this.anio = anio;
+            this.precio = precio;
+        }
+
+        public String getPlaca() { return placa; }
+        public String getRca() { return rca; }
+        public String getMarca() { return marca; }
+        public String getModelo() { return modelo; }
+        public int getAnio() { return anio; }
+        public double getPrecio() { return precio; }
+
+        @Override
+        public String toString() {
+            return "Placa: " + placa + ", RCA: " + rca + ", Marca: " + marca +
+                   ", Modelo: " + modelo + ", Anio: " + anio + ", Precio: " + precio;
+        }
+    }
+
+    static class Estacionamiento {
+        private List<Vehiculo> vehiculos = new LinkedList<>();
+
+        public void agregarVehiculo(Vehiculo vehiculo) {
+            vehiculos.add(vehiculo);
+            System.out.println("Vehiculo agregado correctamente.");
+        }
+
+        public Vehiculo buscarPorPlaca(String placa) {
+            for (Vehiculo v : vehiculos) {
+                if (v.getPlaca().equalsIgnoreCase(placa)) {
+                    return v;
+                }
+            }
+            return null;
+        }
+
+        public List<Vehiculo> filtrarPorAnio(int anio) {
+            List<Vehiculo> filtrados = new LinkedList<>();
+            for (Vehiculo v : vehiculos) {
+                if (v.getAnio() == anio) {
+                    filtrados.add(v);
+                }
+            }
+            return filtrados;
+        }
+
+        public void mostrarTodos() {
+            if (vehiculos.isEmpty()) {
+                System.out.println("No hay vehiculos registrados.");
+            } else {
+                System.out.println("Lista de vehiculos:");
+                for (Vehiculo v : vehiculos) {
+                    System.out.println(v);
+                }
+            }
+        }
+
+        public boolean eliminarVehiculo(String placa) {
+            Vehiculo v = buscarPorPlaca(placa);
+            if (v != null) {
+                vehiculos.remove(v);
+                System.out.println("Vehiculo eliminado correctamente.");
+                return true;
+            }
+            System.out.println("No se encontró el vehiculo con placa: " + placa);
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        Estacionamiento estacionamiento = new Estacionamiento();
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("\n=== El SuperEstacionamiento 2077 ===");
+            System.out.println("1. Agregar vehiculo");
+            System.out.println("2. Buscar vehiculo por placa");
+            System.out.println("3. Ver vehiculos por anio");
+            System.out.println("4. Ver todos los vehiculos");
+            System.out.println("5. Eliminar vehiculo");
+            System.out.println("0. Salir");
+            System.out.print("Seleccione una opcion: ");
+            opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar buffer
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Placa: ");
+                    String placa = scanner.nextLine();
+                    System.out.print("RCA: ");
+                    String rca = scanner.nextLine();
+                    System.out.print("Marca: ");
+                    String marca = scanner.nextLine();
+                    System.out.print("Modelo: ");
+                    String modelo = scanner.nextLine();
+                    System.out.print("Anio: ");
+                    int anio = scanner.nextInt();
+                    System.out.print("Precio: ");
+                    double precio = scanner.nextDouble();
+                    scanner.nextLine(); // Limpiar buffer
+
+                    Vehiculo nuevo = new Vehiculo(placa, rca, marca, modelo, anio, precio);
+                    estacionamiento.agregarVehiculo(nuevo);
+                    break;
+
+                case 2:
+                    System.out.print("Ingrese placa a buscar: ");
+                    String placaBuscar = scanner.nextLine();
+                    Vehiculo encontrado = estacionamiento.buscarPorPlaca(placaBuscar);
+                    if (encontrado != null) {
+                        System.out.println("Vehiculo encontrado: " + encontrado);
+                    } else {
+                        System.out.println("Vehiculo no encontrado.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Ingrese anio a filtrar: ");
+                    int anioFiltrar = scanner.nextInt();
+                    List<Vehiculo> filtrados = estacionamiento.filtrarPorAnio(anioFiltrar);
+                    if (filtrados.isEmpty()) {
+                        System.out.println("No hay vehiculos del anio " + anioFiltrar);
+                    } else {
+                        System.out.println("Vehiculos del anio " + anioFiltrar + ":");
+                        for (Vehiculo v : filtrados) {
+                            System.out.println(v);
+                        }
+                    }
+                    break;
+
+                case 4:
+                    estacionamiento.mostrarTodos();
+                    break;
+
+                case 5:
+                    System.out.print("Ingrese placa del vehiculo a eliminar: ");
+                    String placaEliminar = scanner.nextLine();
+                    estacionamiento.eliminarVehiculo(placaEliminar);
+                    break;
+
+                case 0:
+                    System.out.println("Hasta luego");
+                    break;
+
+                default:
+                    System.out.println("Opcion no valida");
+            }
+        } while (opcion != 0);
+
+        scanner.close();
+    }
+}
