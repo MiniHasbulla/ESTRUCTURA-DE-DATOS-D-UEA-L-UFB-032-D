@@ -1,0 +1,64 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 06/07/2025
+//Tema: Ejercicios Parte Dos
+//Lenguaje: Java
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class ManejoListasPromedio {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Double> listaPrincipal = new ArrayList<>();
+        List<Double> menoresIgualesPromedio = new ArrayList<>();
+        List<Double> mayoresPromedio = new ArrayList<>();
+
+        //cargar datos en lista
+        System.out.println("=== La Increible MEGACARGA de Datos 2099===");
+        System.out.print("Digita la cantidad de datos a cargar: ");
+        int n = scanner.nextInt();
+
+        System.out.println("Escribe los datos (numeros reales):");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Dato " + (i + 1) + ": ");
+            double dato = scanner.nextDouble();
+            listaPrincipal.add(dato);
+        }
+
+        //calculo el promedio
+        double suma = 0;
+        for (double dato : listaPrincipal) {
+            suma += dato;
+        }
+        double promedio = suma / listaPrincipal.size();
+
+        //separo según promedio
+        for (double dato : listaPrincipal) {
+            if (dato <= promedio) {
+                menoresIgualesPromedio.add(dato);
+            } else {
+                mayoresPromedio.add(dato);
+            }
+        }
+
+        //resultados
+        System.out.println("\n=== Resultados ===");
+        //lista principal
+        System.out.println("Datos en la lista principal: " + listaPrincipal);
+
+        //promedio
+        System.out.println("Promedio: " + promedio);
+
+        //datos promedio
+        System.out.println("Datos menores o iguales al promedio: " + menoresIgualesPromedio);
+
+        //datos promedio
+        System.out.println("Datos mayores al promedio: " + mayoresPromedio);
+
+        scanner.close();
+    }
+}
