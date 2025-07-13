@@ -1,3 +1,10 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 13/07/2025
+//Tema: Ejercicios Semana 7
+//Lenguaje: Java
+
 import java.util.Stack;
 
 public class BalanceoSimbolos {
