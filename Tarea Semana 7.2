@@ -1,0 +1,45 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 13/07/2025
+//Tema: Ejercicios Semana 7 - Parte Dos Torres de Hanoi
+//Lenguaje: Java
+
+import java.util.Stack;
+
+public class TorresDeHanoi {
+
+    public static void moverDiscos(int n, Stack<Integer> origen, Stack<Integer> destino, Stack<Integer> auxiliar,
+                                   String nombreOrigen, String nombreDestino, String nombreAuxiliar) {
+        if (n == 1) {
+            //muevo disco
+            int disco = origen.pop();
+            destino.push(disco);
+            System.out.println("Debes mover el disco " + disco + " de " + nombreOrigen + " a " + nombreDestino);
+        } else {
+            //discos a torre
+            moverDiscos(n - 1, origen, auxiliar, destino, nombreOrigen, nombreAuxiliar, nombreDestino);
+
+            //disco a destino
+            moverDiscos(1, origen, destino, auxiliar, nombreOrigen, nombreDestino, nombreAuxiliar);
+
+            //disco a torre
+            moverDiscos(n - 1, auxiliar, destino, origen, nombreAuxiliar, nombreDestino, nombreOrigen);
+        }
+    }
+
+    public static void main(String[] args) {
+        int numeroDiscos = 3; //numero de discos
+
+        Stack<Integer> torreA = new Stack<>();
+        Stack<Integer> torreB = new Stack<>();
+        Stack<Integer> torreC = new Stack<>();
+
+        //cargar discos
+        for (int i = numeroDiscos; i >= 1; i--) {
+            torreA.push(i);
+        }
+        System.out.println("Los Super movimientos para resolver con " + numeroDiscos + " discos:");
+        moverDiscos(numeroDiscos, torreA, torreC, torreB, "A", "C", "B");
+    }
+}
