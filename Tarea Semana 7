@@ -1,0 +1,45 @@
+import java.util.Stack;
+
+public class BalanceoSimbolos {
+
+    public static boolean estaBalanceada(String expresion) {
+        Stack<Character> pila = new Stack<>();
+
+        for (int i = 0; i < expresion.length(); i++) {
+            char c = expresion.charAt(i);
+
+            //simbolo apertura=agregado
+            if (c == '(' || c == '{' || c == '[') {
+                pila.push(c);
+            }
+
+            //verificar
+            else if (c == ')' || c == '}' || c == ']') {
+                if (pila.isEmpty()) {
+                    return false;
+                }
+
+                char tope = pila.pop();
+
+                if ((c == ')' && tope != '(') ||
+                    (c == '}' && tope != '{') ||
+                    (c == ']' && tope != '[')) {
+                    return false;
+                }
+            }
+        }
+
+        //pila vacia=balanceado
+        return pila.isEmpty();
+    }
+
+    public static void main(String[] args) {
+        String expresion = "{7 + (8 * 5) - [(9 - 7) + (4 + 1)]}";
+
+        if (estaBalanceada(expresion)) {
+            System.out.println("Formula balanceada");
+        } else {
+            System.out.println("Formula no balanceada");
+        }
+    }
+}
