@@ -1,1 +1,171 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 20/07/2025
+//Tema: Ejercicio Semana 8 PRACTICO EXPERIMENTAL 2
+//Lenguaje: C#
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
+namespace AsignacionAsientosParque
+{
+    public class Visitante
+    {
+        public string Nombre { get; set; }
+        public int Edad { get; set; }
+        public int NumeroTurno { get; set; }
+
+        public Visitante(string nombre, int edad, int numeroTurno)
+        {
+            Nombre =nombre;
+            Edad =edad;
+            NumeroTurno =numeroTurno;
+        }
+
+        public override string ToString()
+        {
+            return $"Turno: {NumeroTurno}, Nombre: {Nombre}, Edad: {Edad}";
+        }
+    }
+
+    public class Atraccion
+    {
+        private Queue<Visitante> colaEspera;
+        private List<Visitante> asientosAsignados;
+        private int capacidadMaxima;
+        private int contadorTurnos;
+
+        public Atraccion(int capacidad)
+        {
+            capacidadMaxima =capacidad;
+            colaEspera = new Queue<Visitante>();
+            asientosAsignados = new List<Visitante>();
+            contadorTurnos = 1;
+        }
+
+        public void AgregarVisitante(string nombre, int edad)
+        {
+            if (asientosAsignados.Count >= capacidadMaxima)
+            {
+                Console.WriteLine("Todos los asientos estan ocupados, no se pueden aceptar masitantes.");
+                return;
+            }
+
+            var nuevoVisitante = new Visitante(nombre, edad, contadorTurnos++);
+            colaEspera.Enqueue(nuevoVisitante);
+            Console.WriteLine($"Visitante agregado: {nuevoVisitante}");
+        }
+
+        public void AsignarAsientos()
+        {
+            Console.WriteLine("\nSuper asignando asientos, paciencia porfa");
+            while (asientosAsignados.Count < capacidadMaxima && colaEspera.Count > 0)
+            {
+                var visitante = colaEspera.Dequeue();
+                asientosAsignados.Add(visitante);
+                Console.WriteLine($"Asiento asignado a: {visitante}");
+            }
+
+            if (asientosAsignados.Count >= capacidadMaxima)
+            {
+                Console.WriteLine("\n¡Excelente, todos los asientos estan llenos!");
+            }
+        }
+
+        public void MostrarColaEspera()
+        {
+            Console.WriteLine("\nLos visitantes en cola de espera son:");
+            foreach (var visitante in colaEspera)
+            {
+                Console.WriteLine(visitante);
+            }
+        }
+
+        public void MostrarAsientosAsignados()
+        {
+            Console.WriteLine("\nVisitantes con asiento asignado:");
+            foreach (var visitante in asientosAsignados)
+            {
+                Console.WriteLine(visitante);
+            }
+        }
+
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            Console.WriteLine("SuperMegaAsientos2099 Parque de Diversiones");
+            var atraccion = new Atraccion(30); //30 asientos
+
+            //agrego visitantes
+            atraccion.AgregarVisitante("Pepito Perez", 24);
+            atraccion.AgregarVisitante("Maria Del Carmen", 37);
+            atraccion.AgregarVisitante("Carlos Lopez", 16);
+            atraccion.AgregarVisitante("Paula Martinez", 20);
+            atraccion.AgregarVisitante("Nicolas Rodriguez", 21);
+            atraccion.AgregarVisitante("Sofi Castillo", 17);
+            atraccion.AgregarVisitante("Ana Villamil", 32);
+            atraccion.AgregarVisitante("Jose Bermeo", 28);
+            atraccion.AgregarVisitante("Paco Espinoza", 31);
+            atraccion.AgregarVisitante("Daniel Aponte", 29);
+
+            //cola de espera
+            atraccion.MostrarColaEspera();
+
+            //asignar algunos asientos
+            atraccion.AsignarAsientos();
+
+            //mas visitantes
+            atraccion.AgregarVisitante("Daniel Castro", 23);
+            atraccion.AgregarVisitante("Elena Ruiz", 31);
+            atraccion.AgregarVisitante("Fernando Mendoza", 22);
+            atraccion.AgregarVisitante("Patricia Ortega", 23);
+            atraccion.AgregarVisitante("Ricardo Vargas", 36);
+            atraccion.AgregarVisitante("Veronica Silva", 25);
+            atraccion.AgregarVisitante("Oscar Nuñez", 34);
+            atraccion.AgregarVisitante("Teresa Rios", 21);
+            atraccion.AgregarVisitante("Hector Medina", 27);
+            atraccion.AgregarVisitante("Lucia Guerrero", 18);
+
+            //cola y asientos
+            atraccion.MostrarColaEspera();
+            atraccion.MostrarAsientosAsignados();
+
+            //más asientos
+            atraccion.AsignarAsientos();
+
+            //ultimos visitantes
+            atraccion.AgregarVisitante("Raul Jimenez", 40);
+            atraccion.AgregarVisitante("Adriana Leon", 22);
+            atraccion.AgregarVisitante("Manuel Cortes", 28);
+            atraccion.AgregarVisitante("Isabel Ponce", 25);
+            atraccion.AgregarVisitante("Francisco Mora", 30);
+            atraccion.AgregarVisitante("Gabriela Rojas", 19);
+            atraccion.AgregarVisitante("Arturo Herrera", 45);
+            atraccion.AgregarVisitante("Silvia Campos", 27);
+            atraccion.AgregarVisitante("Roberto Vega", 32);
+            atraccion.AgregarVisitante("Beatriz Navarro", 24);
+
+            //cola y asientos
+            atraccion.MostrarColaEspera();
+            atraccion.MostrarAsientosAsignados();
+
+            //asignar los demas asientos 
+            atraccion.AsignarAsientos();
+
+            //estado final
+            atraccion.MostrarColaEspera();
+            atraccion.MostrarAsientosAsignados();
+
+            stopwatch.Stop();
+            Console.WriteLine($"\nTiempo total de ejecucion: {stopwatch.ElapsedMilliseconds} ms");
+        }
+    }
+}
