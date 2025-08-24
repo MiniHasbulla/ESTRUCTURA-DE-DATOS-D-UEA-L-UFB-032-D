@@ -1,0 +1,114 @@
+import java.util.*;
+
+public class CampaniaVacunacion {
+
+    public static void main(String[] args) {
+        // 1. Crear 500 ciudadanos
+        Set<Ciudadano> ciudadanos = generarCiudadanos(500);
+
+        // 2. Seleccionar 75 vacunados con Pfizer
+        Set<Ciudadano> pfizer = seleccionarAleatorios(ciudadanos, 75);
+
+        // 3. Seleccionar 75 vacunados con AstraZeneca
+        Set<Ciudadano> astraZeneca = seleccionarAleatorios(ciudadanos, 75);
+
+        // 4. Operaciones de teoría de conjuntos
+
+        // Conjunto de vacunados (Pfizer ∪ AstraZeneca)
+        Set<Ciudadano> vacunados = new HashSet<>(pfizer);
+        vacunados.addAll(astraZeneca);
+
+        // No vacunados = Ciudadanos - vacunados
+        Set<Ciudadano> noVacunados = new HashSet<>(ciudadanos);
+        noVacunados.removeAll(vacunados);
+
+        // Ambas dosis = Pfizer ∩ AstraZeneca
+        Set<Ciudadano> ambasDosis = new HashSet<>(pfizer);
+        ambasDosis.retainAll(astraZeneca);
+
+        // Solo Pfizer = Pfizer - AstraZeneca
+        Set<Ciudadano> soloPfizer = new HashSet<>(pfizer);
+        soloPfizer.removeAll(astraZeneca);
+
+        // Solo AstraZeneca = AstraZeneca - Pfizer
+        Set<Ciudadano> soloAstraZeneca = new HashSet<>(astraZeneca);
+        soloAstraZeneca.removeAll(pfizer);
+
+        // 5. Imprimir resultados
+        System.out.println("=== RESULTADOS DE LA CAMPAÑA DE VACUNACIÓN ===\n");
+
+        System.out.println("Ciudadanos que NO se han vacunado: " + noVacunados.size());
+        imprimirLista(noVacunados);
+
+        System.out.println("\nCiudadanos que han recibido AMBAS dosis (Pfizer y AstraZeneca): " + ambasDosis.size());
+        imprimirLista(ambasDosis);
+
+        System.out.println("\nCiudadanos que solo recibieron la vacuna de Pfizer: " + soloPfizer.size());
+        imprimirLista(soloPfizer);
+
+        System.out.println("\nCiudadanos que solo recibieron la vacuna de AstraZeneca: " + soloAstraZeneca.size());
+        imprimirLista(soloAstraZeneca);
+    }
+
+    // Método para generar ciudadanos
+    public static Set<Ciudadano> generarCiudadanos(int cantidad) {
+        Set<Ciudadano> ciudadanos = new HashSet<>();
+        for (int i = 1; i <= cantidad; i++) {
+            ciudadanos.add(new Ciudadano(i, "Ciudadano_" + i));
+        }
+        return ciudadanos;
+    }
+
+    // Selecciona ciudadanos aleatorios de un conjunto
+    public static Set<Ciudadano> seleccionarAleatorios(Set<Ciudadano> base, int cantidad) {
+        List<Ciudadano> lista = new ArrayList<>(base);
+        Collections.shuffle(lista);
+        return new HashSet<>(lista.subList(0, cantidad));
+    }
+
+    // Imprimir lista de ciudadanos
+    public static void imprimirLista(Set<Ciudadano> lista) {
+        for (Ciudadano c : lista) {
+            System.out.println(c);
+        }
+    }
+}
+
+// Clase Ciudadano
+class Ciudadano {
+    private int id;
+    private String nombre;
+
+    public Ciudadano(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    // Para imprimir bonito
+    @Override
+    public String toString() {
+        return id + " - " + nombre;
+    }
+
+    // Importante para que HashSet funcione bien
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ciudadano)) return false;
+        Ciudadano c = (Ciudadano) o;
+        return this.id == c.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+}
