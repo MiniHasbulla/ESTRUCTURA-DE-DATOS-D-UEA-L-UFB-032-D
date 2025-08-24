@@ -1,42 +1,42 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 24/08/2025
+//Tema: Ejercicios Semana 10
+//Lenguaje: Java
+
 import java.util.*;
 
 public class CampaniaVacunacion {
 
     public static void main(String[] args) {
-        // 1. Crear 500 ciudadanos
+        //personas
         Set<Ciudadano> ciudadanos = generarCiudadanos(500);
-
-        // 2. Seleccionar 75 vacunados con Pfizer
+        //pfizer
         Set<Ciudadano> pfizer = seleccionarAleatorios(ciudadanos, 75);
-
-        // 3. Seleccionar 75 vacunados con AstraZeneca
+        //astraZeneca
         Set<Ciudadano> astraZeneca = seleccionarAleatorios(ciudadanos, 75);
-
-        // 4. Operaciones de teoría de conjuntos
-
-        // Conjunto de vacunados (Pfizer ∪ AstraZeneca)
+        //pfizer y astrazeneca
         Set<Ciudadano> vacunados = new HashSet<>(pfizer);
         vacunados.addAll(astraZeneca);
 
-        // No vacunados = Ciudadanos - vacunados
+        //no vacunados
         Set<Ciudadano> noVacunados = new HashSet<>(ciudadanos);
         noVacunados.removeAll(vacunados);
 
-        // Ambas dosis = Pfizer ∩ AstraZeneca
+        //pfizer y astrazeneca
         Set<Ciudadano> ambasDosis = new HashSet<>(pfizer);
         ambasDosis.retainAll(astraZeneca);
 
-        // Solo Pfizer = Pfizer - AstraZeneca
+        //solo pfizer
         Set<Ciudadano> soloPfizer = new HashSet<>(pfizer);
         soloPfizer.removeAll(astraZeneca);
 
-        // Solo AstraZeneca = AstraZeneca - Pfizer
+        //solo astrazeneca
         Set<Ciudadano> soloAstraZeneca = new HashSet<>(astraZeneca);
         soloAstraZeneca.removeAll(pfizer);
 
-        // 5. Imprimir resultados
-        System.out.println("=== RESULTADOS DE LA CAMPAÑA DE VACUNACIÓN ===\n");
-
+        System.out.println("=== RESULTADOS DE LA SUPER CAMPAÑA DE VACUNACIÓN ===\n");
         System.out.println("Ciudadanos que NO se han vacunado: " + noVacunados.size());
         imprimirLista(noVacunados);
 
@@ -50,7 +50,7 @@ public class CampaniaVacunacion {
         imprimirLista(soloAstraZeneca);
     }
 
-    // Método para generar ciudadanos
+    //crear personas
     public static Set<Ciudadano> generarCiudadanos(int cantidad) {
         Set<Ciudadano> ciudadanos = new HashSet<>();
         for (int i = 1; i <= cantidad; i++) {
@@ -59,14 +59,12 @@ public class CampaniaVacunacion {
         return ciudadanos;
     }
 
-    // Selecciona ciudadanos aleatorios de un conjunto
+    //personas aleatorias
     public static Set<Ciudadano> seleccionarAleatorios(Set<Ciudadano> base, int cantidad) {
         List<Ciudadano> lista = new ArrayList<>(base);
         Collections.shuffle(lista);
         return new HashSet<>(lista.subList(0, cantidad));
     }
-
-    // Imprimir lista de ciudadanos
     public static void imprimirLista(Set<Ciudadano> lista) {
         for (Ciudadano c : lista) {
             System.out.println(c);
@@ -74,7 +72,7 @@ public class CampaniaVacunacion {
     }
 }
 
-// Clase Ciudadano
+//clase
 class Ciudadano {
     private int id;
     private String nombre;
@@ -91,14 +89,12 @@ class Ciudadano {
     public String getNombre() {
         return nombre;
     }
-
-    // Para imprimir bonito
+    //para imprimir bonito
     @Override
     public String toString() {
         return id + " - " + nombre;
     }
-
-    // Importante para que HashSet funcione bien
+    //para que hashSet funcione bien
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
