@@ -1,3 +1,10 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 30/08/2025
+//Tema: Foro Semana 11
+//Lenguaje: Java
+
 import java.util.*;
 import java.util.stream.Collectors;
 
