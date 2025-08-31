@@ -1,0 +1,337 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class HanakotobaApp {
+    private static DiccionarioFlores diccionario;
+    private static Scanner scanner;
+    
+    public static void main(String[] args) {
+        inicializarAplicacion();
+        mostrarMenuPrincipal();
+    }
+    
+    private static void inicializarAplicacion() {
+        scanner = new Scanner(System.in);
+        diccionario = new DiccionarioFlores();
+        cargarDatosIniciales();
+        System.out.println("Bienvenido a Hanakotoba");
+        System.out.println("Descubre el lenguaje de las flores en la cultura japonesa\n");
+    }
+    
+    private static void cargarDatosIniciales() {
+        //flores con significados
+        diccionario.agregarFlor(new Flor("Sakura", "Belleza efímera de la vida", "Primavera", "Rosa", "Cerezo"));
+        diccionario.agregarFlor(new Flor("Ume", "Perseverancia y elegancia", "Invierno", "Blanco", "Ciruelo"));
+        diccionario.agregarFlor(new Flor("Kiku", "Nobleza y longevidad", "Otoño", "Amarillo", "Crisantemo"));
+        diccionario.agregarFlor(new Flor("Ajisai", "Gratitud y amor familiar", "Verano", "Azul", "Hortensia"));
+        diccionario.agregarFlor(new Flor("Botan", "Prosperidad y buen augurio", "Primavera", "Rojo", "Peonía"));
+        diccionario.agregarFlor(new Flor("Himawari", "Adoración y lealtad", "Verano", "Amarillo", "Girasol"));
+        diccionario.agregarFlor(new Flor("Sumire", "Sinceridad y amor modesto", "Primavera", "Morado", "Violeta"));
+        diccionario.agregarFlor(new Flor("Tsutsuji", "Pasión y modestia", "Primavera", "Rosa", "Azalea"));
+        diccionario.agregarFlor(new Flor("Yuri", "Pureza y renovación", "Verano", "Blanco", "Lirio"));
+        diccionario.agregarFlor(new Flor("Kaneshon", "Agradecimiento", "Primavera", "Rosa", "Clavel"));
+    }
+    
+    private static void mostrarMenuPrincipal() {
+        while (true) {
+            System.out.println("\n=== SUPERMENU 8000 ===");
+            System.out.println("1.Explorar todas las flores");
+            System.out.println("2.Buscar flor por nombre");
+            System.out.println("3.Crear ramo con mensaje");
+            System.out.println("4.Jugar adivinanza");
+            System.out.println("5.Flores por estación");
+            System.out.println("6.Salir");
+            System.out.print("Selecciona una opción: ");
+            
+            try {
+                int opcion = Integer.parseInt(scanner.nextLine());
+                
+                switch (opcion) {
+                    case 1 -> explorarFlores();
+                    case 2 -> buscarFlor();
+                    case 3 -> crearRamo();
+                    case 4 -> jugarAdivinanza();
+                    case 5 -> mostrarFloresPorEstacion();
+                    case 6 -> { 
+                        System.out.println("Arigatou gozaimasu! ¡Gracias por usar Hanakotoba!");
+                        return;
+                    }
+                    default -> System.out.println("Opción no válida. Intenta de nuevo.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor, ingresa un número válido.");
+            }
+        }
+    }
+    
+    private static void explorarFlores() {
+        System.out.println("\n--- Todas las Flores ---");
+        diccionario.mostrarTodasLasFlores();
+    }
+    
+    private static void buscarFlor() {
+        System.out.print("\nIngresa el nombre de la flor: ");
+        String nombre = scanner.nextLine();
+        Flor flor = diccionario.buscarFlor(nombre);
+        
+        if (flor != null) {
+            System.out.println("\n" + flor);
+        } else {
+            System.out.println("Flor no encontrada. Intenta con otro nombre.");
+        }
+    }
+    
+    private static void crearRamo() {
+        DiseñadorRamos diseñador = new DiseñadorRamos();
+        System.out.println("\n--- Crear SuperRamos Florales ---");
+        
+        while (true) {
+            System.out.println("\nFlores disponibles:");
+            diccionario.mostrarNombresFlores();
+            System.out.print("Ingresa el nombre de la flor para agregar (o 'terminar' para finalizar): ");
+            String nombre = scanner.nextLine();
+            
+            if (nombre.equalsIgnoreCase("terminar")) {
+                break;
+            }
+            
+            Flor flor = diccionario.buscarFlor(nombre);
+            if (flor != null) {
+                diseñador.agregarFlor(flor);
+                System.out.println(flor.getNombre() + " agregada al ramo");
+            } else {
+                System.out.println("Flor no encontrada. Intenta con otro nombre.");
+            }
+        }
+        
+        System.out.println("\nTu ramo floral:");
+        diseñador.mostrarRamo();
+        System.out.println("\nMensaje de tu ramo: " + diseñador.obtenerMensajeRamo());
+    }
+    
+    private static void jugarAdivinanza() {
+        JuegoAdivinanza juego = new JuegoAdivinanza(diccionario);
+        juego.iniciarJuego(scanner);
+    }
+    
+    private static void mostrarFloresPorEstacion() {
+        System.out.println("\n--- SuperFlores por estación ---");
+        Map<String, List<Flor>> floresPorEstacion = diccionario.obtenerFloresPorEstacion();
+        
+        for (Map.Entry<String, List<Flor>> entry : floresPorEstacion.entrySet()) {
+            System.out.println("\n " + entry.getKey() + ":");
+            for (Flor flor : entry.getValue()) {
+                System.out.println("  • " + flor.getNombre() + " - " + flor.getSignificado());
+            }
+        }
+    }
+}
+
+/**
+ * Clase que representa una flor con sus atributos
+ */
+class Flor {
+    private String nombre;
+    private String significado;
+    private String estacion;
+    private String color;
+    private String nombreEspanol;
+    
+    public Flor(String nombre, String significado, String estacion, String color, String nombreEspanol) {
+        this.nombre = nombre;
+        this.significado = significado;
+        this.estacion = estacion;
+        this.color = color;
+        this.nombreEspanol = nombreEspanol;
+    }
+    
+    // Getters
+    public String getNombre() { return nombre; }
+    public String getSignificado() { return significado; }
+    public String getEstacion() { return estacion; }
+    public String getColor() { return color; }
+    public String getNombreEspanol() { return nombreEspanol; }
+    
+    @Override
+    public String toString() {
+        return String.format("%s (%s)%n" +
+                           "   Significado: %s%n" +
+                           "   Color: %s%n" +
+                           "   Estación: %s%n" +
+                           "   Nombre español: %s",
+                           nombre, nombreEspanol, significado, color, estacion, nombreEspanol);
+    }
+}
+
+/**
+ * Clase que gestiona la colección de flores usando diccionarios
+ */
+class DiccionarioFlores {
+    private Map<String, Flor> floresMap; // Diccionario principal
+    
+    public DiccionarioFlores() {
+        floresMap = new HashMap<>();
+    }
+    
+    public void agregarFlor(Flor flor) {
+        floresMap.put(flor.getNombre().toLowerCase(), flor);
+    }
+    
+    public Flor buscarFlor(String nombre) {
+        return floresMap.get(nombre.toLowerCase());
+    }
+    
+    public boolean florExiste(String nombre) {
+        return floresMap.containsKey(nombre.toLowerCase());
+    }
+    
+    public void mostrarTodasLasFlores() {
+        if (floresMap.isEmpty()) {
+            System.out.println("No hay flores en el diccionario.");
+            return;
+        }
+        
+        for (Flor flor : floresMap.values()) {
+            System.out.println(flor);
+            System.out.println("---");
+        }
+    }
+    
+    public void mostrarNombresFlores() {
+        System.out.println("Nombres disponibles: " + 
+            String.join(", ", floresMap.keySet().stream()
+                .map(key -> floresMap.get(key).getNombre())
+                .collect(Collectors.toList())));
+    }
+    
+    public Map<String, List<Flor>> obtenerFloresPorEstacion() {
+        Map<String, List<Flor>> floresPorEstacion = new TreeMap<>();
+        
+        for (Flor flor : floresMap.values()) {
+            String estacion = flor.getEstacion();
+            if (!floresPorEstacion.containsKey(estacion)) {
+                floresPorEstacion.put(estacion, new ArrayList<>());
+            }
+            floresPorEstacion.get(estacion).add(flor);
+        }
+        
+        return floresPorEstacion;
+    }
+    
+    public List<Flor> obtenerTodasLasFlores() {
+        return new ArrayList<>(floresMap.values());
+    }
+    
+    public Flor obtenerFlorAleatoria() {
+        if (floresMap.isEmpty()) return null;
+        
+        List<Flor> flores = new ArrayList<>(floresMap.values());
+        Random random = new Random();
+        return flores.get(random.nextInt(flores.size()));
+    }
+}
+
+/**
+ * Clase para crear y mostrar ramos florales
+ */
+class DiseñadorRamos {
+    private List<Flor> ramo;
+    
+    public DiseñadorRamos() {
+        ramo = new ArrayList<>();
+    }
+    
+    public void agregarFlor(Flor flor) {
+        ramo.add(flor);
+    }
+    
+    public void mostrarRamo() {
+        if (ramo.isEmpty()) {
+            System.out.println("El ramo está vacío.");
+            return;
+        }
+        
+        for (Flor flor : ramo) {
+            System.out.println("• " + flor.getNombre() + " - " + flor.getSignificado());
+        }
+    }
+    
+    public String obtenerMensajeRamo() {
+        if (ramo.isEmpty()) {
+            return "Tu ramo está vacío... ¡agrega algunas flores!";
+        }
+        
+        StringBuilder mensaje = new StringBuilder();
+        for (Flor flor : ramo) {
+            mensaje.append(flor.getSignificado()).append(". ");
+        }
+        
+        return mensaje.toString();
+    }
+    
+    public void limpiarRamo() {
+        ramo.clear();
+    }
+}
+
+/**
+ * Clase que gestiona el juego de adivinanza
+ */
+class JuegoAdivinanza {
+    private DiccionarioFlores diccionario;
+    private int puntaje;
+    private Set<String> floresAdivinadas;
+    
+    public JuegoAdivinanza(DiccionarioFlores diccionario) {
+        this.diccionario = diccionario;
+        this.puntaje = 0;
+        this.floresAdivinadas = new HashSet<>();
+    }
+    
+    public void iniciarJuego(Scanner scanner) {
+        System.out.println("\nJuego de Adivinanza de Flores");
+        System.out.println("Adivina el significado de las flores japonesas!");
+        System.out.println("Gana 5 puntos por cada respuesta correcta.\n");
+        
+        for (int i = 0; i < 5; i++) {
+            Flor flor = obtenerFlorNoAdivinada();
+            if (flor == null) {
+                System.out.println("¡Has adivinado todas las flores!");
+                break;
+            }
+            
+            System.out.println("Flor: " + flor.getNombre() + " (" + flor.getNombreEspanol() + ")");
+            System.out.println("Color: " + flor.getColor() + ", Estación: " + flor.getEstacion());
+            System.out.print("¿Cuál es su significado? ");
+            String respuesta = scanner.nextLine();
+            
+            if (respuesta.equalsIgnoreCase(flor.getSignificado())) {
+                System.out.println("Correcto +5 puntos");
+                puntaje += 5;
+                floresAdivinadas.add(flor.getNombre().toLowerCase());
+            } else {
+                System.out.println("Incorrecto. El significado es: " + flor.getSignificado());
+            }
+            System.out.println();
+        }
+        
+        System.out.println("Puntuación final: " + puntaje + " puntos");
+        System.out.println("Flores adivinadas: " + floresAdivinadas.size() + "/" + diccionario.obtenerTodasLasFlores().size());
+    }
+    
+    private Flor obtenerFlorNoAdivinada() {
+        List<Flor> todasFlores = diccionario.obtenerTodasLasFlores();
+        List<Flor> floresNoAdivinadas = todasFlores.stream()
+            .filter(flor -> !floresAdivinadas.contains(flor.getNombre().toLowerCase()))
+            .collect(Collectors.toList());
+        
+        if (floresNoAdivinadas.isEmpty()) return null;
+        
+        Random random = new Random();
+        return floresNoAdivinadas.get(random.nextInt(floresNoAdivinadas.size()));
+    }
+    
+    public int getPuntaje() {
+        return puntaje;
+    }
+}
