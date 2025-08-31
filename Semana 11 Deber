@@ -1,1 +1,123 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 31/08/2025
+//Tema: Deber Semana 11
+//Lenguaje: Java
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class TraductorBasico {
+    private Map<String, String> diccionario;
+    private Scanner scanner;
+
+    public TraductorBasico() {
+        scanner = new Scanner(System.in);
+        inicializarDiccionario();
+    }
+
+    private void inicializarDiccionario() {
+        diccionario = new HashMap<>();
+        
+        //palabras
+        diccionario.put("the", "el/la");
+        diccionario.put("be", "ser/estar");
+        diccionario.put("to", "a");
+        diccionario.put("of", "de");
+        diccionario.put("and", "y");
+        diccionario.put("a", "un/una");
+        diccionario.put("in", "en");
+        diccionario.put("that", "que");
+        diccionario.put("have", "tener");
+        diccionario.put("i", "yo");
+        diccionario.put("it", "eso");
+        diccionario.put("for", "para");
+        diccionario.put("not", "no");
+        diccionario.put("on", "en/sobre");
+        diccionario.put("with", "con");
+        diccionario.put("he", "él");
+        diccionario.put("as", "como");
+        diccionario.put("you", "tú/usted");
+        diccionario.put("do", "hacer");
+        diccionario.put("at", "en");
+    }
+
+    public void mostrarMenu() {
+        int opcion;
+        do {
+            System.out.println("\n=== SUPERTRADUCTOR BÁSICO INGLÉS-ESPAÑOL 8000 ===");
+            System.out.println("1. Traducir una frase");
+            System.out.println("2. Agregar palabras al diccionario");
+            System.out.println("3. Salir");
+            System.out.print("Escoge una opción: ");
+            
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+                
+                switch (opcion) {
+                    case 1:
+                        traducirFrase();
+                        break;
+                    case 2:
+                        agregarPalabra();
+                        break;
+                    case 3:
+                        System.out.println("¡Bon Voyage!");
+                        break;
+                    default:
+                        System.out.println("Opcion no válida, intenta de nuevo");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Debes digitar un numero valido");
+                opcion = 0;
+            }
+            
+        } while (opcion != 3);
+    }
+
+    private void traducirFrase() {
+        System.out.print("\nDigita la frase en ingles: ");
+        String frase = scanner.nextLine().toLowerCase();
+        
+        String[] palabras = frase.split(" ");
+        StringBuilder traduccion = new StringBuilder();
+        
+        for (String palabra : palabras) {
+            //quitar signos de puntuación
+            String palabraLimpia = palabra.replaceAll("[^a-zA-Z]", "");
+            
+            if (diccionario.containsKey(palabraLimpia)) {
+                traduccion.append(diccionario.get(palabraLimpia)).append(" ");
+            } else {
+                //deja la palabra original
+                traduccion.append(palabra).append(" ");
+            }
+        }
+        
+        System.out.println("Traduccion: " + traduccion.toString().trim());
+    }
+
+    private void agregarPalabra() {
+        System.out.print("\nEscribe la palabra en ingles: ");
+        String palabraIngles = scanner.nextLine().toLowerCase().trim();
+        
+        System.out.print("Digita la traduccion al español: ");
+        String palabraEspanol = scanner.nextLine().trim();
+        
+        if (palabraIngles.isEmpty() || palabraEspanol.isEmpty()) {
+            System.out.println("Error, no puedes ingresar palabras vacias.");
+            return;
+        }
+        
+        diccionario.put(palabraIngles, palabraEspanol);
+        System.out.println("¡Palabra agregada exitosamente!");
+        System.out.println("Diccionario actualizado: " + palabraIngles + " -> " + palabraEspanol);
+    }
+
+    public static void main(String[] args) {
+        TraductorBasico traductor = new TraductorBasico();
+        traductor.mostrarMenu();
+    }
+}
