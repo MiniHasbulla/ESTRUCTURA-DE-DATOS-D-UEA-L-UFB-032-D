@@ -1,0 +1,295 @@
+import java.util.*;
+import java.time.LocalDate;
+
+//gestionar el torneo
+public class TorneoFutbol {
+    private Map<String, Equipo> equipos;
+    private Set<Jugador> jugadores;
+    
+    public TorneoFutbol() {
+        this.equipos = new HashMap<>();
+        this.jugadores = new HashSet<>();
+    }
+    
+    //representar un jugador
+    public static class Jugador {
+        private String id;
+        private String nombre;
+        private String apellido;
+        private LocalDate fechaNacimiento;
+        private String posicion;
+        private int numeroCamiseta;
+        
+        public Jugador(String id, String nombre, String apellido, LocalDate fechaNacimiento, 
+                      String posicion, int numeroCamiseta) {
+            this.id = id;
+            this.nombre = nombre;
+            this.apellido = apellido;
+            this.fechaNacimiento = fechaNacimiento;
+            this.posicion = posicion;
+            this.numeroCamiseta = numeroCamiseta;
+        }
+        
+        //getters y setters
+        public String getId() { return id; }
+        public String getNombre() { return nombre; }
+        public String getApellido() { return apellido; }
+        public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+        public String getPosicion() { return posicion; }
+        public int getNumeroCamiseta() { return numeroCamiseta; }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Jugador jugador = (Jugador) o;
+            return Objects.equals(id, jugador.id);
+        }
+        
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
+        
+        @Override
+        public String toString() {
+            return nombre + " " + apellido + " (" + posicion + ") - #" + numeroCamiseta;
+        }
+    }
+    
+    //equipo
+    public static class Equipo {
+        private String id;
+        private String nombre;
+        private String entrenador;
+        private Set<Jugador> jugadores;
+        
+        public Equipo(String id, String nombre, String entrenador) {
+            this.id = id;
+            this.nombre = nombre;
+            this.entrenador = entrenador;
+            this.jugadores = new HashSet<>();
+        }
+        
+        //getters y setters
+        public String getId() { return id; }
+        public String getNombre() { return nombre; }
+        public String getEntrenador() { return entrenador; }
+        public Set<Jugador> getJugadores() { return jugadores; }
+        
+        public boolean agregarJugador(Jugador jugador) {
+            return jugadores.add(jugador);
+        }
+        
+        public boolean removerJugador(Jugador jugador) {
+            return jugadores.remove(jugador);
+        }
+        
+        @Override
+        public String toString() {
+            return nombre + " - Entrenador: " + entrenador + " - Jugadores: " + jugadores.size();
+        }
+    }
+    
+    //gestionar jugadores
+    public boolean registrarJugador(Jugador jugador) {
+        long startTime = System.nanoTime();
+        boolean resultado = jugadores.add(jugador);
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de registro de jugador: " + (endTime - startTime) + " ns");
+        return resultado;
+    }
+    
+    public boolean eliminarJugador(String idJugador) {
+        long startTime = System.nanoTime();
+        boolean resultado = jugadores.removeIf(jugador -> jugador.getId().equals(idJugador));
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de eliminacion de jugador: " + (endTime - startTime) + " ns");
+        return resultado;
+    }
+    
+    public Jugador buscarJugador(String idJugador) {
+        long startTime = System.nanoTime();
+        for (Jugador jugador : jugadores) {
+            if (jugador.getId().equals(idJugador)) {
+                long endTime = System.nanoTime();
+                System.out.println("Tiempo de busqueda de jugador: " + (endTime - startTime) + " ns");
+                return jugador;
+            }
+        }
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de busqueda de jugador: " + (endTime - startTime) + " ns");
+        return null;
+    }
+    
+    //gestionar equipos
+    public boolean registrarEquipo(Equipo equipo) {
+        long startTime = System.nanoTime();
+        boolean resultado = equipos.putIfAbsent(equipo.getId(), equipo) == null;
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de registro de equipo: " + (endTime - startTime) + " ns");
+        return resultado;
+    }
+    
+    public boolean eliminarEquipo(String idEquipo) {
+        long startTime = System.nanoTime();
+        boolean resultado = equipos.remove(idEquipo) != null;
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de eliminacion de equipo: " + (endTime - startTime) + " ns");
+        return resultado;
+    }
+    
+    public Equipo buscarEquipo(String idEquipo) {
+        long startTime = System.nanoTime();
+        Equipo equipo = equipos.get(idEquipo);
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de busqueda de equipo: " + (endTime - startTime) + " ns");
+        return equipo;
+    }
+    
+    public boolean asignarJugadorAEquipo(String idJugador, String idEquipo) {
+        long startTime = System.nanoTime();
+        Jugador jugador = buscarJugador(idJugador);
+        Equipo equipo = buscarEquipo(idEquipo);
+        
+        if (jugador != null && equipo != null) {
+            boolean resultado = equipo.agregarJugador(jugador);
+            long endTime = System.nanoTime();
+            System.out.println("Tiempo de asignacion jugador-equipo: " + (endTime - startTime) + " ns");
+            return resultado;
+        }
+        long endTime = System.nanoTime();
+        System.out.println("Tiempo de asignacion jugador-equipo: " + (endTime - startTime) + " ns");
+        return false;
+    }
+    
+    //reportería
+    public void mostrarTodosLosJugadores() {
+        System.out.println("\n TODOS LOS JUGADORES REGISTRADOS ");
+        jugadores.forEach(System.out::println);
+        System.out.println("Total: " + jugadores.size() + " jugadores\n");
+    }
+    
+    public void mostrarTodosLosEquipos() {
+        System.out.println("\n TODOS LOS EQUIPOS REGISTRADOS ");
+        equipos.values().forEach(System.out::println);
+        System.out.println("Total: " + equipos.size() + " equipos\n");
+    }
+    
+    public void mostrarJugadoresDeEquipo(String idEquipo) {
+        Equipo equipo = equipos.get(idEquipo);
+        if (equipo != null) {
+            System.out.println("\n=== JUGADORES DEL EQUIPO: " + equipo.getNombre() + " ===");
+            equipo.getJugadores().forEach(System.out::println);
+            System.out.println("Total: " + equipo.getJugadores().size() + " jugadores\n");
+        } else {
+            System.out.println("Equipo no encontrado");
+        }
+    }
+    
+    public void consultarJugador(String idJugador) {
+        Jugador jugador = buscarJugador(idJugador);
+        if (jugador != null) {
+            System.out.println("\n MEGAINFORMACION DEL JUGADOR ");
+            System.out.println("ID: " + jugador.getId());
+            System.out.println("Nombre: " + jugador.getNombre() + " " + jugador.getApellido());
+            System.out.println("Posicion: " + jugador.getPosicion());
+            System.out.println("Número de camiseta: " + jugador.getNumeroCamiseta());
+            
+            // Mostrar equipos a los que pertenece
+            System.out.println("Pertenece a los equipos:");
+            for (Equipo equipo : equipos.values()) {
+                if (equipo.getJugadores().contains(jugador)) {
+                    System.out.println("  - " + equipo.getNombre());
+                }
+            }
+            System.out.println();
+        } else {
+            System.out.println("Jugador no encontrado");
+        }
+    }
+    
+    //analisis de complejidad
+    public void analizarComplejidad() {
+        System.out.println("\n SUPERANALISIS DE COMPLEJIDAD ");
+        System.out.println("Estructuras utilizadas:");
+        System.out.println("1. HashMap<String, Equipo> para equipos");
+        System.out.println("   - Insercion: O(1) promedio");
+        System.out.println("   - Búsqueda: O(1) promedio");
+        System.out.println("   - Eliminacion: O(1) promedio");
+        
+        System.out.println("2. HashSet<Jugador> para jugadores");
+        System.out.println("   - Insercion: O(1) promedio");
+        System.out.println("   - Búsqueda: O(1) promedio");
+        System.out.println("   - Eliminacion: O(1) promedio");
+        
+        System.out.println("3. HashSet<Jugador> dentro de cada equipo");
+        System.out.println("   - Operaciones: O(1) promedio para operaciones basicas");
+        
+        System.out.println("\nVentajas:");
+        System.out.println("- Acceso rapido a equipos por ID (HashMap)");
+        System.out.println("- Evita duplicados de jugadores (HashSet)");
+        System.out.println("- Busquedas eficientes");
+        System.out.println("- Facilita relaciones muchos-a-muchos");
+        
+        System.out.println("\nDesventajas:");
+        System.out.println("- No mantiene orden de insercion");
+        System.out.println("- Mayor consumo de memoria que arrays/listas");
+        System.out.println("- Requiere buenas funciones hashCode()");
+    }
+    
+    //Metodo main para demostracion
+    public static void main(String[] args) {
+        TorneoFutbol torneo = new TorneoFutbol();
+        
+        //crear jugadores
+        Jugador j1 = new Jugador("J001", "Lionel", "Messi", 
+                                LocalDate.of(1987, 6, 24), "Delantero", 10);
+        Jugador j2 = new Jugador("J002", "Ronaldo", "Nazario", 
+                                LocalDate.of(1985, 2, 5), "Delantero", 11);
+        Jugador j3 = new Jugador("J003", "Ronaldinho", "Gaucho", 
+                                LocalDate.of(1992, 2, 5), "Delantero", 10);
+        
+        //registrar jugadores
+        torneo.registrarJugador(j1);
+        torneo.registrarJugador(j2);
+        torneo.registrarJugador(j3);
+        
+        //crear equipos
+        Equipo eq1 = new Equipo("E001", "Barcelona", "Xavi Hernandez");
+        Equipo eq2 = new Equipo("E002", "Real Madrid", "Carlo Ancelotti");
+        
+        //equipos
+        torneo.registrarEquipo(eq1);
+        torneo.registrarEquipo(eq2);
+        
+        //jugadores a equipos
+        torneo.asignarJugadorAEquipo("J001", "E001"); // Messi al Barcelona
+        torneo.asignarJugadorAEquipo("J002", "E002"); // Ronaldo Nazario al Real Madrid
+        torneo.asignarJugadorAEquipo("J003", "E001"); // Ronaldinho al Barcelona
+        
+        //reporteria
+        torneo.mostrarTodosLosJugadores();
+        torneo.mostrarTodosLosEquipos();
+        torneo.mostrarJugadoresDeEquipo("E001");
+        
+        //consultas
+        torneo.consultarJugador("J001");
+        
+        //complejidad
+        torneo.analizarComplejidad();
+        
+        //rendimiento
+        System.out.println("\n PRUEBAS DE RENDIMIENTO ");
+        
+        //prueba
+        for (int i = 4; i <= 1000; i++) {
+            Jugador jugador = new Jugador("J" + String.format("%03d", i), 
+                                        "Jugador" + i, "Apellido" + i,
+                                        LocalDate.now(), "Mediocampista", i);
+            torneo.registrarJugador(jugador);
+        }
+        
+        System.out.println("Total jugadores despues de pruebas: " + torneo.jugadores.size());
+    }
+}
