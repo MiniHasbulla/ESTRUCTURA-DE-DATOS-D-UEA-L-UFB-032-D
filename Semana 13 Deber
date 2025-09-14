@@ -1,3 +1,10 @@
+//"Universidad Estatal Amazonica"
+//Clase: Estructura de Datos D
+//Nombre: Amir Puente
+//Fecha de entrega: 14/09/2025
+//Tema: Semana 13
+//Lenguaje: C
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
