@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_REVISTAS 12
+#define LONGITUD_TITULO 50
+
+//primero convertir a minusculas
+void aMinusculas(char *str) {
+    for (int i = 0; str[i]; i++) {
+        str[i] = tolower(str[i]);
+    }
+}
+
+//busqueda iterativa
+int buscarRevista(char catalogo[][LONGITUD_TITULO], char *tituloBuscado) {
+    char tituloTemp[LONGITUD_TITULO];
+    strcpy(tituloTemp, tituloBuscado);
+    aMinusculas(tituloTemp);
+    
+    for (int i = 0; i < MAX_REVISTAS; i++) {
+        char catalogoTemp[LONGITUD_TITULO];
+        strcpy(catalogoTemp, catalogo[i]);
+        aMinusculas(catalogoTemp);
+        
+        if (strcmp(catalogoTemp, tituloTemp) == 0) {
+            return i; //encontrado
+        }
+    }
+    return -1; //no encontrado
+}
+
+int main() {
+    char catalogo[MAX_REVISTAS][LONGITUD_TITULO];
+    int opcion;
+    char tituloBuscado[LONGITUD_TITULO];
+    
+    printf(" EL MEGACATALOGO DE REVISTAS \n\n");
+    
+    //revistas
+    printf("Redacta 12 titulos de revistas:\n");
+    for (int i = 0; i < MAX_REVISTAS; i++) {
+        printf("Revista %d: ", i + 1);
+        fgets(catalogo[i], LONGITUD_TITULO, stdin);
+        
+        //salto de linea
+        catalogo[i][strcspn(catalogo[i], "\n")] = '\0';
+    }
+    
+    //menu
+    do {
+        printf("\n SUPERULTRAMENU PRINCIPAL \n");
+        printf("1. Buscar un titulo\n");
+        printf("2. Mostrar todo el catalogo\n");
+        printf("3. Salir\n");
+        printf("Selecciona una opcion: ");
+        scanf("%d", &opcion);
+        getchar(); //buffer
+        
+        switch (opcion) {
+            case 1:
+                printf("\nRedacta el titulo a buscar: ");
+                fgets(tituloBuscado, LONGITUD_TITULO, stdin);
+                tituloBuscado[strcspn(tituloBuscado, "\n")] = '\0';
+                
+                int resultado = buscarRevista(catalogo, tituloBuscado);
+                
+                if (resultado != -1) {
+                    printf("\n Encontrado: \"%s\" esta en el catalogo (posicion %d)\n", 
+                           catalogo[resultado], resultado + 1);
+                } else {
+                    printf("\n No encontrado: \"%s\" no existe en el catalogo\n", tituloBuscado);
+                }
+                break;
+                
+            case 2:
+                printf("\n SUPERCATALOGO COMPLETO \n");
+                for (int i = 0; i < MAX_REVISTAS; i++) {
+                    printf("%d. %s\n", i + 1, catalogo[i]);
+                }
+                break;
+                
+            case 3:
+                printf("\nHasta luego!\n");
+                break;
+                
+            default:
+                printf("\n Opcion no valida, intenta de nuevo\n");
+        }
+        
+    } while (opcion != 3);
+    
+    return 0;
+}
