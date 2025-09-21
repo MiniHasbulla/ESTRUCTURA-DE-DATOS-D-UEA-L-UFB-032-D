@@ -1,0 +1,334 @@
+using System;
+
+namespace ArbolBinario
+{
+    //clase nodo arbol
+    class Nodo
+    {
+        public int Dato { get; set; }
+        public Nodo Izquierdo { get; set; }
+        public Nodo Derecho { get; set; }
+
+        public Nodo(int dato)
+        {
+            Dato = dato;
+            Izquierdo = null;
+            Derecho = null;
+        }
+    }
+
+    //clase arbol binario
+    class ArbolBinario
+    {
+        private Nodo raiz;
+
+        public ArbolBinario()
+        {
+            raiz = null;
+        }
+
+        //insertar
+        public void Insertar(int dato)
+        {
+            raiz = InsertarRecursivo(raiz, dato);
+        }
+
+        //recursivo para insertar
+        private Nodo InsertarRecursivo(Nodo actual, int dato)
+        {
+            if (actual == null)
+            {
+                return new Nodo(dato);
+            }
+
+            if (dato < actual.Dato)
+            {
+                actual.Izquierdo = InsertarRecursivo(actual.Izquierdo, dato);
+            }
+            else if (dato > actual.Dato)
+            {
+                actual.Derecho = InsertarRecursivo(actual.Derecho, dato);
+            }
+
+            return actual;
+        }
+
+        //buscar datos
+        public bool Buscar(int dato)
+        {
+            return BuscarRecursivo(raiz, dato);
+        }
+
+        //recursivo para buscar
+        private bool BuscarRecursivo(Nodo actual, int dato)
+        {
+            if (actual == null)
+            {
+                return false;
+            }
+
+            if (dato == actual.Dato)
+            {
+                return true;
+            }
+
+            return dato < actual.Dato 
+                ? BuscarRecursivo(actual.Izquierdo, dato) 
+                : BuscarRecursivo(actual.Derecho, dato);
+        }
+
+        //eliminar un dato
+        public void Eliminar(int dato)
+        {
+            raiz = EliminarRecursivo(raiz, dato);
+        }
+
+        //recursivo para eliminar
+        private Nodo EliminarRecursivo(Nodo actual, int dato)
+        {
+            if (actual == null)
+            {
+                return null;
+            }
+
+            if (dato == actual.Dato)
+            {
+                //nodo sin hijos
+                if (actual.Izquierdo == null && actual.Derecho == null)
+                {
+                    return null;
+                }
+
+                //nodo con un hijo
+                if (actual.Izquierdo == null)
+                {
+                    return actual.Derecho;
+                }
+
+                if (actual.Derecho == null)
+                {
+                    return actual.Izquierdo;
+                }
+
+                //nodo con dos hijos
+                int valorMinimo = EncontrarMinimo(actual.Derecho);
+                actual.Dato = valorMinimo;
+                actual.Derecho = EliminarRecursivo(actual.Derecho, valorMinimo);
+                return actual;
+            }
+
+            if (dato < actual.Dato)
+            {
+                actual.Izquierdo = EliminarRecursivo(actual.Izquierdo, dato);
+                return actual;
+            }
+
+            actual.Derecho = EliminarRecursivo(actual.Derecho, dato);
+            return actual;
+        }
+
+        //encontrar el valor minimo
+        private int EncontrarMinimo(Nodo nodo)
+        {
+            return nodo.Izquierdo == null ? nodo.Dato : EncontrarMinimo(nodo.Izquierdo);
+        }
+
+        //inorden
+        public void Inorden()
+        {
+            Console.Write("Recorrido inorden: ");
+            InordenRecursivo(raiz);
+            Console.WriteLine();
+        }
+
+        private void InordenRecursivo(Nodo nodo)
+        {
+            if (nodo != null)
+            {
+                InordenRecursivo(nodo.Izquierdo);
+                Console.Write(nodo.Dato + " ");
+                InordenRecursivo(nodo.Derecho);
+            }
+        }
+
+        //preorden
+        public void Preorden()
+        {
+            Console.Write("Recorrido preorden: ");
+            PreordenRecursivo(raiz);
+            Console.WriteLine();
+        }
+
+        private void PreordenRecursivo(Nodo nodo)
+        {
+            if (nodo != null)
+            {
+                Console.Write(nodo.Dato + " ");
+                PreordenRecursivo(nodo.Izquierdo);
+                PreordenRecursivo(nodo.Derecho);
+            }
+        }
+
+        //postorden
+        public void Postorden()
+        {
+            Console.Write("Recorrido postorden: ");
+            PostordenRecursivo(raiz);
+            Console.WriteLine();
+        }
+
+        private void PostordenRecursivo(Nodo nodo)
+        {
+            if (nodo != null)
+            {
+                PostordenRecursivo(nodo.Izquierdo);
+                PostordenRecursivo(nodo.Derecho);
+                Console.Write(nodo.Dato + " ");
+            }
+        }
+
+        //verificar si el arbol esta vacio
+        public bool EstaVacio()
+        {
+            return raiz == null;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ArbolBinario arbol = new ArbolBinario();
+            bool ejecutando = true;
+
+            Console.WriteLine("ULTRAMAGNIFICO SISTEMA DE ÁRBOL BINARIO");
+
+            while (ejecutando)
+            {
+                MostrarMenu();
+                string opcion = Console.ReadLine();
+
+                switch (opcion)
+                {
+                    case "1":
+                        InsertarNodo(arbol);
+                        break;
+                    case "2":
+                        MostrarRecorridos(arbol);
+                        break;
+                    case "3":
+                        BuscarNodo(arbol);
+                        break;
+                    case "4":
+                        EliminarNodo(arbol);
+                        break;
+                    case "5":
+                        ejecutando = false;
+                        Console.WriteLine("Au revoir");
+                        break;
+                    default:
+                        Console.WriteLine("Opcion no valida. Intentalo de nuevo.");
+                        break;
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        static void MostrarMenu()
+        {
+            Console.WriteLine("SUPERMEGAMENU PRINCIPAL:");
+            Console.WriteLine("1. Insertar nodo");
+            Console.WriteLine("2. Mostrar recorridos");
+            Console.WriteLine("3. Buscar elemento");
+            Console.WriteLine("4. Eliminar nodo");
+            Console.WriteLine("5. Salir");
+            Console.Write("Selecciona una opcion: ");
+        }
+
+        static void InsertarNodo(ArbolBinario arbol)
+        {
+            try
+            {
+                Console.Write("Digita el numero a insertar: ");
+                int dato = int.Parse(Console.ReadLine());
+                arbol.Insertar(dato);
+                Console.WriteLine($"Numero {dato} insertado correctamente.");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error, digita un numero valido.");
+            }
+        }
+
+        static void MostrarRecorridos(ArbolBinario arbol)
+        {
+            if (arbol.EstaVacio())
+            {
+                Console.WriteLine("El arbol está vacio.");
+                return;
+            }
+
+            arbol.Inorden();
+            arbol.Preorden();
+            arbol.Postorden();
+        }
+
+        static void BuscarNodo(ArbolBinario arbol)
+        {
+            if (arbol.EstaVacio())
+            {
+                Console.WriteLine("El arbol está vacio.");
+                return;
+            }
+
+            try
+            {
+                Console.Write("Ingrese el numero a buscar: ");
+                int dato = int.Parse(Console.ReadLine());
+                
+                if (arbol.Buscar(dato))
+                {
+                    Console.WriteLine($"El numero {dato} si existe en el arbol.");
+                }
+                else
+                {
+                    Console.WriteLine($"El numero {dato} no existe en el arbol.");
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error, debes digitar un numero valido.");
+            }
+        }
+
+        static void EliminarNodo(ArbolBinario arbol)
+        {
+            if (arbol.EstaVacio())
+            {
+                Console.WriteLine("El arbol esta vacio.");
+                return;
+            }
+
+            try
+            {
+                Console.Write("Ingrese el numero a eliminar: ");
+                int dato = int.Parse(Console.ReadLine());
+                
+                if (arbol.Buscar(dato))
+                {
+                    arbol.Eliminar(dato);
+                    Console.WriteLine($"Numero {dato} eliminado correctamente.");
+                }
+                else
+                {
+                    Console.WriteLine($"El numero {dato} no existe en el arbol.");
+                }
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error, ingresa un numero valido.");
+            }
+        }
+    }
+}
