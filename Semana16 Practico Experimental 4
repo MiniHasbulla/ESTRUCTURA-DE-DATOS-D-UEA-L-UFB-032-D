@@ -1,9 +1,9 @@
-//"Universidad Estatal Amazonica"
-//Clase: Estructura de Datos D
-//Nombre: Amir Puente
-//Fecha de entrega: 05/10/2025
-//Tema: Practico Experimental 4 Semana 16
-//Lenguaje: Python
+#"Universidad Estatal Amazonica"
+#Clase: Estructura de Datos D
+#Nombre: Amir Puente
+#Fecha de entrega: 05/10/2025
+#Tema: Practico Experimental 4 Semana 16
+#Lenguaje: Python
 
 import heapq
 import time
