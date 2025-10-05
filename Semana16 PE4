@@ -1,0 +1,304 @@
+
+import heapq
+import time
+import random
+from typing import Dict, List, Tuple, Optional
+
+class GrafoVuelos:
+    def __init__(self):
+        self.ciudades = {}
+        self.vuelos = []
+        
+    def agregar_ciudad(self, nombre: str):
+        """añado ciudad al grafo"""
+        if nombre not in self.ciudades:
+            self.ciudades[nombre] = len(self.ciudades)
+            
+    def agregar_vuelo(self, origen: str, destino: str, precio: float, aerolinea: str):
+        """agrego vuelo al grafo"""
+        if origen not in self.ciudades or destino not in self.ciudades:
+            raise ValueError("Ciudad de origen o destino no existe")
+            
+        self.vuelos.append({
+            'origen': origen,
+            'destino': destino,
+            'precio': precio,
+            'aerolinea': aerolinea
+        })
+    
+    def dijkstra(self, origen: str, destino: str) -> Tuple[Dict, float]:
+        """Uso algoritmo de dijkstra para ver el camino más barato"""
+        if origen not in self.ciudades or destino not in self.ciudades:
+            return {}, float('inf')
+            
+        distancias = {ciudad: float('inf') for ciudad in self.ciudades}
+        predecesores = {ciudad: None for ciudad in self.ciudades}
+        distancias[origen] = 0
+        
+        cola_prioridad = [(0, origen)]
+        
+        while cola_prioridad:
+            distancia_actual, ciudad_actual = heapq.heappop(cola_prioridad)
+            
+            if ciudad_actual == destino:
+                break
+                
+            if distancia_actual > distancias[ciudad_actual]:
+                continue
+                
+            for vuelo in self.vuelos:
+                if vuelo['origen'] == ciudad_actual:
+                    ciudad_vecina = vuelo['destino']
+                    nueva_distancia = distancias[ciudad_actual] + vuelo['precio']
+                    
+                    if nueva_distancia < distancias[ciudad_vecina]:
+                        distancias[ciudad_vecina] = nueva_distancia
+                        predecesores[ciudad_vecina] = ciudad_actual
+                        heapq.heappush(cola_prioridad, (nueva_distancia, ciudad_vecina))
+        
+        return predecesores, distancias[destino]
+    
+    def reconstruir_camino(self, predecesores: Dict, destino: str) -> List[str]:
+        """Camino origen hasta el destino"""
+        camino = []
+        actual = destino
+        
+        while actual is not None:
+            camino.append(actual)
+            actual = predecesores.get(actual)
+            
+        return camino[::-1]
+    
+    def buscar_vuelo_mas_barato(self, origen: str, destino: str) -> Dict:
+        """Vuelo mas barato entre dos ciudades"""
+        start_time = time.time()
+        
+        predecesores, precio_total = self.dijkstra(origen, destino)
+        camino = self.reconstruir_camino(predecesores, destino)
+        
+        #detalles de cada vuelo
+        vuelos_detalle = []
+        for i in range(len(camino) - 1):
+            vuelo = self._obtener_vuelo(camino[i], camino[i + 1])
+            if vuelo:
+                vuelos_detalle.append(vuelo)
+        
+        execution_time = time.time() - start_time
+        
+        return {
+            'camino': camino,
+            'precio_total': precio_total,
+            'vuelos_detalle': vuelos_detalle,
+            'tiempo_ejecucion': execution_time
+        }
+    
+    def _obtener_vuelo(self, origen: str, destino: str) -> Optional[Dict]:
+        """Vuelo especifico entre dos ciudades"""
+        for vuelo in self.vuelos:
+            if vuelo['origen'] == origen and vuelo['destino'] == destino:
+                return vuelo.copy()
+        return None
+    
+    def buscar_vuelos_directos(self, origen: str, destino: str) -> List[Dict]:
+        """Vuelos directos entre dos ciudades"""
+        return [vuelo for vuelo in self.vuelos 
+                if vuelo['origen'] == origen and vuelo['destino'] == destino]
+    
+    def obtener_todas_ciudades(self) -> List[str]:
+        """Todas las ciudades disponibles"""
+        return list(self.ciudades.keys())
+    
+    def obtener_todos_vuelos(self) -> List[Dict]:
+        """Retorna todos los vuelos disponibles"""
+        return self.vuelos.copy()
+
+class BaseDatosVuelos:
+    def __init__(self):
+        self.grafo = GrafoVuelos()
+        self._inicializar_datos_ficticios()
+    
+    def _inicializar_datos_ficticios(self):
+        """Base de datos de vuelos"""
+        ciudades = [
+            "Madrid", "Barcelona", "Paris", "Londres", "Roma", 
+            "Berlin", "Amsterdam", "Lisboa", "Nueva York", "Miami",
+            "Los Angeles", "Tokio", "Sidney", "Dubai", "Singapur"
+        ]
+        
+        #agrego ciudades
+        for ciudad in ciudades:
+            self.grafo.agregar_ciudad(ciudad)
+        
+        #agrego vuelos con precios
+        conexiones = [
+            # Vuelos Europa
+            ("Madrid", "Barcelona", 80, "Iberia"),
+            ("Madrid", "Paris", 120, "Air France"),
+            ("Madrid", "Lisboa", 60, "TAP"),
+            ("Barcelona", "Roma", 90, "Vueling"),
+            ("Paris", "Londres", 70, "British Airways"),
+            ("Paris", "Berlin", 85, "Lufthansa"),
+            ("Londres", "Amsterdam", 65, "KLM"),
+            ("Roma", "Berlin", 95, "Alitalia"),
+            ("Berlin", "Amsterdam", 55, "Eurowings"),
+            
+            #intercontinentales
+            ("Madrid", "Nueva York", 350, "Iberia"),
+            ("Barcelona", "Miami", 400, "American Airlines"),
+            ("Paris", "Los Angeles", 450, "Air France"),
+            ("Londres", "Tokio", 600, "Japan Airlines"),
+            ("Dubai", "Sidney", 550, "Emirates"),
+            ("Singapur", "Tokio", 300, "Singapore Airlines"),
+            
+            #adicionales
+            ("Nueva York", "Miami", 150, "Delta"),
+            ("Los Angeles", "Tokio", 500, "ANA"),
+            ("Dubai", "Madrid", 280, "Emirates"),
+            ("Singapur", "Sidney", 320, "Qantas")
+        ]
+        
+        for origen, destino, precio, aerolinea in conexiones:
+            self.grafo.agregar_vuelo(origen, destino, precio, aerolinea)
+
+class SistemaVuelos:
+    def __init__(self):
+        self.bd = BaseDatosVuelos()
+    
+    def mostrar_menu(self):
+        """Menu principal"""
+        print("\n" + "="*50)
+        print("      LOS SUPERDUPERHIPER VUELOS BARATOS")
+        print("="*50)
+        print("1. Buscar vuelo mas barato entre dos ciudades")
+        print("2. Ver las ciudades disponibles")
+        print("3. Ver los vuelos disponibles")
+        print("4. Buscar vuelos directos")
+        print("5. Analisis de rendimiento")
+        print("6. Salir")
+        print("="*50)
+    
+    def ejecutar(self):
+        """Ejecuta el sistema principal"""
+        while True:
+            self.mostrar_menu()
+            opcion = input("Digita una opcion (1-6): ")
+            
+            if opcion == "1":
+                self.buscar_vuelo_mas_barato()
+            elif opcion == "2":
+                self.mostrar_ciudades()
+            elif opcion == "3":
+                self.mostrar_vuelos()
+            elif opcion == "4":
+                self.buscar_vuelos_directos()
+            elif opcion == "5":
+                self.analizar_rendimiento()
+            elif opcion == "6":
+                print("Gracias por usar el sistema, obrigado panita.")
+                break
+            else:
+                print("Opcion no valida, selecciona entre 1-6.")
+    
+    def buscar_vuelo_mas_barato(self):
+        """Busca el vuelo mas barato entre dos ciudades"""
+        print("\n--- MEGABUSQUEDA DE VUELO MAS BARATO ---")
+        origen = input("Ciudad de origen: ").strip()
+        destino = input("Ciudad de destino: ").strip()
+        
+        if origen not in self.bd.grafo.ciudades:
+            print(f"Error, la ciudad '{origen}' no existe en la base de datos.")
+            return
+        if destino not in self.bd.grafo.ciudades:
+            print(f"Error, la ciudad '{destino}' no existe en la base de datos.")
+            return
+        
+        resultado = self.bd.grafo.buscar_vuelo_mas_barato(origen, destino)
+        
+        if resultado['precio_total'] == float('inf'):
+            print(f"No se encontro ruta entre {origen} y {destino}.")
+        else:
+            print(f"\n RUTA MAS BARATA ENCONTRADA:")
+            print(f"Ruta: {' → '.join(resultado['camino'])}")
+            print(f"Precio total: €{resultado['precio_total']:.2f}")
+            print(f"Tiempo de busqueda: {resultado['tiempo_ejecucion']:.6f} segundos")
+            
+            print("\nDetalles de los vuelos:")
+            for i, vuelo in enumerate(resultado['vuelos_detalle'], 1):
+                print(f"  {i}. {vuelo['origen']} → {vuelo['destino']}: €{vuelo['precio']:.2f} ({vuelo['aerolinea']})")
+    
+    def mostrar_ciudades(self):
+        """Muestra todas las ciudades disponibles"""
+        print("\n LAS MEGACIUDADES DISPONIBLES")
+        ciudades = self.bd.grafo.obtener_todas_ciudades()
+        for i, ciudad in enumerate(ciudades, 1):
+            print(f"{i}. {ciudad}")
+        print(f"\nTotal: {len(ciudades)} ciudades")
+    
+    def mostrar_vuelos(self):
+        """Muestra todos los vuelos disponibles"""
+        print("\n TODOS LOS VUELOS DISPONIBLES")
+        vuelos = self.bd.grafo.obtener_todos_vuelos()
+        for i, vuelo in enumerate(vuelos, 1):
+            print(f"{i}. {vuelo['origen']} → {vuelo['destino']}: €{vuelo['precio']:.2f} ({vuelo['aerolinea']})")
+        print(f"\nTotal: {len(vuelos)} vuelos")
+    
+    def buscar_vuelos_directos(self):
+        """Vuelos directos entre dos ciudades"""
+        print("\n BUSQUEDA DE VUELOS DIRECTOS")
+        origen = input("Ciudad de origen: ").strip()
+        destino = input("Ciudad de destino: ").strip()
+        
+        vuelos_directos = self.bd.grafo.buscar_vuelos_directos(origen, destino)
+        
+        if not vuelos_directos:
+            print(f"No se encontraron vuelos directos entre {origen} y {destino}.")
+        else:
+            print(f"\nVuelos directos encontrados:")
+            for i, vuelo in enumerate(vuelos_directos, 1):
+                print(f"{i}. {vuelo['aerolinea']}: €{vuelo['precio']:.2f}")
+    
+    def analizar_rendimiento(self):
+        """Analisis de rendimiento"""
+        print("\n INCREIBLE ANALISIS DE RENDIMIENTO")
+        
+        # Test con diferentes rutas
+        rutas_test = [
+            ("Madrid", "Barcelona"),
+            ("Madrid", "Londres"),
+            ("Madrid", "Tokio"),
+            ("Paris", "Sidney")
+        ]
+        
+        print("Analizando tiempos de ejecucion...")
+        print("\nRuta".ljust(25) + "Precio".ljust(15) + "Tiempo (seg)")
+        print("-" * 50)
+        
+        for origen, destino in rutas_test:
+            resultado = self.bd.grafo.buscar_vuelo_mas_barato(origen, destino)
+            precio = resultado['precio_total'] if resultado['precio_total'] != float('inf') else "No existe"
+            tiempo = resultado['tiempo_ejecucion']
+            
+            print(f"{origen} → {destino}".ljust(25) + f"€{precio}".ljust(15) + f"{tiempo:.6f}")
+        
+        # Análisis de la estructura
+        print("\n" + "="*50)
+        print("EL HIPERANALISIS DE LA ESTRUCTURA DE DATOS")
+        print("="*50)
+        print(f"Total de ciudades: {len(self.bd.grafo.ciudades)}")
+        print(f"Total de vuelos: {len(self.bd.grafo.vuelos)}")
+        print("\nVENTAJAS:")
+        print("Búsqueda eficiente usando Dijkstra)")
+        print("Encuentra la ruta más barata")
+        print("Estructura flexible")
+        print("\nDESVENTAJAS:")
+        print("No considera tiempos de espera entre vuelos")
+        print("El almacenamiento en lista puede ser ineficiente")
+        print("No maneja vuelos con horarios determinados")
+
+# Función principal
+def main():
+    sistema = SistemaVuelos()
+    sistema.ejecutar()
+
+if __name__ == "__main__":
+    main()
